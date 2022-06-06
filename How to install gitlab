@@ -20,3 +20,10 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
   --shm-size 256m \
   gitlab/gitlab-ee:latest
+
+#####how to verify the installation of gitlab
+sudo docker logs -f gitlab
+
+####how to get the root password of gitlab
+sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
+
