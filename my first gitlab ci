@@ -1,4 +1,8 @@
+tages:
+    - build
+    - test
 build the car:
+    stage: build
     script:
         - mkdir build 
         - cd build 
@@ -7,9 +11,11 @@ build the car:
         - echo "engine" > car.txt
         - echo "wheels" > car.txt
 test the car:
+    stage: test
     script:
         - test -f build/car.txt
         - cd build 
         - grep "chassis" > car.txt
         - grep "engine" > car.txt 
         - grep "wheels" > car.txt
+
