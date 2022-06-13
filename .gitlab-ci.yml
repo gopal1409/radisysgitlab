@@ -1,4 +1,4 @@
-image: node:10
+image: node
 stages:
     - build 
     - test
@@ -10,7 +10,6 @@ cache:
         - node_moduels/
 build website:
     stage: build 
-    image: node
     script:
         - echo $CI_COMMIT_SHORT_SHA	
         - npm install
@@ -27,7 +26,6 @@ test artifact:
         - grep -q "Gatsby" ./public/index.html
     
 test website:
-    image: node 
     stage: test
     script:
         - npm install 
@@ -38,7 +36,6 @@ test website:
 
 deploy to surge:
     stage: deploy
-    image: node
     script:
         - npm install --global surge
         - surge --project ./public --domain  demonic-hospital.surge.sh
