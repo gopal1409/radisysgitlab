@@ -86,8 +86,8 @@ const IndexPage = () => (
         Welcome to <b>Gatsby!</b>
       </h1>
       <h1>Hi People</h1>
-      <p>welcome to new Gatsby site<p>
-      <p>now go build something great<p>
+      <p>welcome to new Gatsby site</p>
+      <p>now go build something great</p>
       <p className={styles.intro}>
         <b>Example pages:</b>{" "}
         {samplePageLinks.map((link, i) => (
