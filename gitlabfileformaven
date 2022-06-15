@@ -28,5 +28,18 @@ pmd-stage:
     stage: pmd
     script:
       - 'mvn $MAVEN_CLI_OPTS -Pcicdprofile pmd:check'
+#spot bug
+spotbug-stage:
+    stage: spotbugs
+    script:
+      - 'mvn $MAVEN_CLI_OPTS -Pcicdprofile spotbugs:check'
+
+code-coverage-stage:
+    stage: code-coverage
+    script:
+      - 'mvn $MAVEN_CLI_OPTS -Pcicdprofile install'
+
+
+
 
 
