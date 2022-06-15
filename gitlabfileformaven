@@ -21,12 +21,12 @@ build-Stage:
 checkstyle-stage:
     stage: checkstyle
     script:
-          - 'mvn $MAVEN_CLI_OPTS -pcicdprofile checkstyle:check'
+          - 'mvn $MAVEN_CLI_OPTS -Pcicdprofile checkstyle:check'
         
 #PMD code analysis
 pmd-stage:
     stage: pmd
     script:
-      - 'mvn $MAVEN_CLI_OPTS -pcicdprofile pmd:check'
+      - 'mvn $MAVEN_CLI_OPTS -Pcicdprofile pmd:check'
 
 
