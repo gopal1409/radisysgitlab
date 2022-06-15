@@ -1,0 +1,19 @@
+image: maven:3.6.1-jdk-11
+variables: 
+    MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+    MAVEN_CLI_OPTS: "--batch-mode -errors --fail-at-end"
+#we need to catch the maven reposiutory so that each job does not have to download the package
+cache:
+    key: mavenrepo
+    paths:
+        - ./.m2/repository
+stages:
+    - build
+    - checkstyle
+    - pmd
+    - spotbugs
+    - code-coverage
+build-Stage:
+    stage: build
+    script:
+        - 'mvn $MAVEN_CLI_OPTS install'
