@@ -17,3 +17,16 @@ build-Stage:
     stage: build
     script:
         - 'mvn $MAVEN_CLI_OPTS install'
+#checkstyle source code standard review
+checkstyle-stage:
+    stage: checkstyle
+    script:
+          - 'mvn $MAVEN_CLI_OPTS -pcicdprofile checkstyle:check'
+        
+#PMD code analysis
+pmd-stage:
+    stage: pmd
+    script:
+      - 'mvn $MAVEN_CLI_OPTS -pcicdprofile pmd:check'
+
+
