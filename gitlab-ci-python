@@ -17,6 +17,7 @@ smoke_test:
     stage: test
     before_script:
         - pip install pytest-html 
+        - pip3 install SQLAlchemy Flask-SQLAlchemy
     script:
         - pytest --html=pytest_reports/pytest-reports.html --self-contained-html 
     artifacts:
