@@ -1,5 +1,6 @@
 stages:
     - test
+    - smoke-test
 lint_test:
     image: python:3.8.0-slim
     stage: test
@@ -11,3 +12,14 @@ lint_test:
         when: always
         paths: 
             - flake_reports/
+smoke_test:
+    image: python:3.8.0-slim
+    stage: test
+    before_script:
+        - pip install pytest-html 
+    script:
+        - pytest --html=pytest_reports/pytest-reports.html --self-contained-html 
+    artifacts:
+        when: always
+        paths: 
+            - pytest_reports/
