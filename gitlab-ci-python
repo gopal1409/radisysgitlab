@@ -1,6 +1,9 @@
 stages:
     - test
     - smoke-test
+    - build-docker
+variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/employee-image:$CI_COMMIT_REF_SLUG
 lint_test:
     image: python:3.8.0-slim
     stage: test
@@ -24,3 +27,8 @@ smoke_test:
         when: always
         paths: 
             - pytest_reports/
+build_docker:
+    stage: build-docker
+    script:
+        - docker build -t $IMAGE_TAG .
+        - docker images
