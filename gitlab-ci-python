@@ -4,7 +4,47 @@ stages:
     - build-docker
 variables:
     IMAGE_TAG: employee-image
+lint_test:stages:
+    - test
+    - smoke-test
+    - build-docker
+variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE_TAG: employee-image
 lint_test:
+    image: python:3.8.0-slim
+    stage: test
+    before_script:
+        - pip install flake8-html
+    script:
+        - flake8 --format=html --htmldir=flake_reports/
+    artifacts:
+        when: always
+        paths: 
+            - flake_reports/
+smoke_test:
+    image: python:3.8.0-slim
+    stage: test
+    before_script:
+        - pip install pytest-html 
+        - pip3 install SQLAlchemy Flask-SQLAlchemy
+    script:
+        - pytest --html=pytest_reports/pytest-reports.html --self-contained-html 
+    artifacts:
+        when: always
+        paths: 
+            - pytest_reports/
+build_docker:
+    stage: build-docker 
+    image: docker:latest
+    services:
+        - docker:20.10.16-dind
+    script:
+        - docker build -t gopal/pyapp .
+        - docker images
+
     image: python:3.8.0-slim
     stage: test
     before_script:
