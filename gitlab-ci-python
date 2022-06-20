@@ -6,7 +6,7 @@ variables:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_TLS_CERTDIR: ""
-    IMAGE_TAG: employee-image
+    IMAGE_TAG: $CI_REGISTRY/app1/employee-images
 lint_test:
     image: python:3.8.0-slim
     stage: test
@@ -35,6 +35,9 @@ build_docker:
     image: docker:latest
     services:
         - docker:20.10.16-dind
+    before_script: 
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     script:
-        - docker build -t gopal/pyapp .
+        - docker build -t $IMAGE_TAG .
         - docker images
+        - docker push $IMAGE_TAG
