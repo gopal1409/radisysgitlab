@@ -3,6 +3,9 @@ stages:
     - smoke-test
     - build-docker
 variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
     IMAGE_TAG: employee-image
 lint_test:
     image: python:3.8.0-slim
@@ -28,10 +31,10 @@ smoke_test:
         paths: 
             - pytest_reports/
 build_docker:
-    stage: build-docker
+    stage: build-docker 
     image: docker:latest
     services:
-        - docker:dind
+        - docker:20.10.16-dind
     script:
-        - docker build -t $IMAGE_TAG .
+        - docker build -t gopal/pyapp .
         - docker images
