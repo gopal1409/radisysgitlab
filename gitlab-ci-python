@@ -10,7 +10,7 @@ variables:
     IMAGE_TAG: $CI_REGISTRY/app1/employee-images
     #staging app get it from the heroku site 
     STAGING_APP: employee-portal-stagingo
-    HEROKU_STAGING: "registry.heroku/$STAGING_APP/web"
+    HEROKU_STAGING: "registry.heroku.com/$STAGING_APP/web"
 lint_test:
     image: python:3.8.0-slim
     stage: test
