@@ -2,11 +2,15 @@ stages:
     - test
     - smoke-test
     - build-docker
+    - deploy-staging
 variables:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_TLS_CERTDIR: ""
     IMAGE_TAG: $CI_REGISTRY/app1/employee-images
+    #staging app get it from the heroku site 
+    STAGING_APP: employee-portal-stagingo
+    HEROKU_STAGING: "registry.heroku/$STAGING_APP/web"
 lint_test:
     image: python:3.8.0-slim
     stage: test
@@ -41,3 +45,15 @@ build_docker:
         - docker build -t $IMAGE_TAG .
         - docker images
         - docker push $IMAGE_TAG
+deploy_stage:
+    image: docker:latest 
+    services: 
+        - docker:dind 
+    stage: deploy-staging
+    before_script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    script:
+        - docker pull $IMAGE_TAG
+        - docker tag $IMAGE_TAG $HEROKU_STAGING
+        - docker login -u _ -p $HEROKU_STAGING_API_KEY registry.heroku.com
+        - docker push $HEROKU_STAGING 
