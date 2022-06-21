@@ -13,7 +13,7 @@ test-simple:
   image: $RF_IMAGE
   stage: rf-test
   script:
-    - robot -v RF_SENSITIVE_VARIABLE:${GITLAB_MASKED_SENSITIVE_VARIABLE} --name simple --exclude selenium --log none --report none --outputdir reports1 test/RF
+    - robot -v RF_SENSITIVE_VARIABLE:${GITLAB_MASKED_SENSITIVE_VARIABLE} --name simple --exclude selenium --log none --report none --outputdir reports1 tests/RF
   after_script:
     - sed -i -e s/"${GITLAB_MASKED_SENSITIVE_VARIABLE}"/"**MASKED**"/g reports1/output.xml
     - mkdir -p reports/
@@ -30,7 +30,7 @@ test-crome:
   services: 
     - $IMAGE_SELENIUM_GC
   script:
-    - robot -v BROWSER:Chrome -v GRID_URL:http://selenium__standalone-chrome:4444/wd/hub --name selenium-chrome --include selenium --log none --report none --outputdir reports2 test/RF
+    - robot -v BROWSER:Chrome -v GRID_URL:http://selenium__standalone-chrome:4444/wd/hub --name selenium-chrome --include selenium --log none --report none --outputdir reports2 tests/RF
   after_script:
     #- sed -i -e s/"${GITLAB_MASKED_SENSITIVE_VARIABLE}"/"**MASKED**"/g reports1/output.xml
     - mkdir -p reports/
@@ -40,14 +40,14 @@ test-crome:
     paths:
     - reports
     expire_in: 1 week
-test-crome:
+test-firefox:
   retry: 2
   image: $RF_IMAGE
   stage: rf-test
   services: 
     - $IMAGE_SELENIUM_GC
   script:
-    - robot -v BROWSER:Chrome -v GRID_URL:http://selenium__standalone-firefox:4444/wd/hub --name selenium-chrome --include selenium --log none --report none --outputdir reports3 test/RF
+    - robot -v BROWSER:Chrome -v GRID_URL:http://selenium__standalone-firefox:4444/wd/hub --name selenium-chrome --include selenium --log none --report none --outputdir reports3 tests/RF
   after_script:
    # - sed -i -e s/"${GITLAB_MASKED_SENSITIVE_VARIABLE}"/"**MASKED**"/g reports3/output.xml
     - mkdir -p reports/
