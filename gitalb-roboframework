@@ -14,7 +14,7 @@ test-simple:
   image: $RF_IMAGE
   stage: rf-test
   script:
-    - robot -v RF_SENSITIVE_VARIABLE:${GITLAB_MASKED_SENSITIVE_VARIABLE} --name simple --exclude selenium --log none --report none --outputdir reports1 tests/RF
+    - robot -v RF_SENSITIVE_VARIABLE:${GITLAB_MASKED_SENSITIVE_VARIABLE} --name simple --exclude selenium --log none --report none --outputdir reports1 test/RF
   after_script:
     - sed -i -e s/"${GITLAB_MASKED_SENSITIVE_VARIABLE}"/"**MASKED**"/g reports1/output.xml
     - mkdir -p reports/
