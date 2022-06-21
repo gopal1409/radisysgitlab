@@ -1,4 +1,3 @@
-
 variables:
 # project variables
   RF_IMAGE: jfxs/robot-framework:latest
@@ -15,6 +14,23 @@ test-simple:
   stage: rf-test
   script:
     - robot -v RF_SENSITIVE_VARIABLE:${GITLAB_MASKED_SENSITIVE_VARIABLE} --name simple --exclude selenium --log none --report none --outputdir reports1 test/RF
+  after_script:
+    - sed -i -e s/"${GITLAB_MASKED_SENSITIVE_VARIABLE}"/"**MASKED**"/g reports1/output.xml
+    - mkdir -p reports/
+    - mv reports1/output.xml reports/output1.xml
+  artifacts:
+    when: always
+    paths:
+    - reports
+    expire_in: 1 week
+test-crome:
+  retry: 2
+  image: $RF_IMAGE
+  stage: rf-test
+  services: 
+    - $IMAGE_SELENIUM_GC
+  script:
+    - robot -v BROWSER:Chrome -v GRID_URL:http://selenium__standalone-chrome:4444/wd/hub --name selenium-chrome --include selenium --log none --report none --outputdir reports2 test/RF
   after_script:
     - sed -i -e s/"${GITLAB_MASKED_SENSITIVE_VARIABLE}"/"**MASKED**"/g reports1/output.xml
     - mkdir -p reports/
