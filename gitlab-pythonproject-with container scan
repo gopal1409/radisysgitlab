@@ -1,0 +1,68 @@
+stages:
+    - test
+    - smoke-test
+    - build-docker
+    - test-trivy
+    - deploy-staging
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+variables:
+    GIT_STRATEGY: none
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE_TAG: $CI_REGISTRY/app1/employee-images:$CI_COMMIT_REF_SLUG
+    #staging app get it from the heroku site 
+    STAGING_APP: employee-portal-stagingo
+    HEROKU_STAGING: "registry.heroku.com/$STAGING_APP/web"
+lint_test:
+    image: python:3.8.0-slim
+    stage: test
+    before_script:
+        - pip install flake8-html
+    script:
+        - flake8 --format=html --htmldir=flake_reports/
+    artifacts:
+        when: always
+        paths: 
+            - flake_reports/
+smoke_test:
+    image: python:3.8.0-slim
+    stage: test
+    before_script:
+        - pip install pytest-html 
+        - pip3 install SQLAlchemy Flask-SQLAlchemy
+    script:
+        - pytest --html=pytest_reports/pytest-reports.html --self-contained-html 
+    artifacts:
+        when: always
+        paths: 
+            - pytest_reports/
+build_docker:
+    stage: build-docker 
+    image: docker:latest
+    services:
+        - docker:20.10.16-dind
+    before_script: 
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    script:
+        - docker build -t $IMAGE_TAG .
+        - docker images
+        - docker push $IMAGE_TAG
+
+      
+deploy_stage:
+    image: docker:latest 
+    services: 
+        - docker:dind 
+    stage: deploy-staging
+    before_script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    script:
+        - docker pull $IMAGE_TAG
+        - docker tag $IMAGE_TAG $HEROKU_STAGING
+        - docker login -u _ -p $HEROKU_STAGING_API_KEY registry.heroku.com
+        - docker push $HEROKU_STAGING 
+    #run the container in heroku cloud
+        - docker run --rm -e HEROKU_API_KEY=$HEROKU_STAGING_API_KEY wingrunr21/alpine-heroku-cli container:release web --app $STAGING_APP
